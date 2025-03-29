@@ -7,7 +7,7 @@ function App() {
   const [SectionSelection, setSectionSelection] = useState("Home");
 
   return (
-    <div className="flex flex-col items-center p-4 justify-center w-full h-full bg-gray-300">
+    <div className="flex flex-col items-center p-4 justify-center w-full h-full bg-[#4296fde4]">
       <div className="max-w-[800px] w-full bg-white p-4 rounded-lg shadow-md mb-10">
         <h1 className="text-center text-3xl">
           EDA of renewable energy systems
@@ -35,7 +35,7 @@ function App() {
           onClick={() => setSectionSelection("FinancialAnalysis")}
         />
         <Button
-          text="Does more upfront investment mean better air clarity?"
+          text="Does more upfront investment lead to greater GHG pollution reduction?"
           onClick={() => setSectionSelection("InvestmentAndAirClarity")}
         />
       </div>

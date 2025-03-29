@@ -4,8 +4,9 @@ import BarChart from "../components/BarChart";
 
 function AverageInstalledCapacitySection() {
   const [chartData, setChartData] = useState({
+    title: "",
     labels: [],
-    dataPoints: [],
+    dataSets: [],
   });
 
   useEffect(() => {
@@ -17,10 +18,20 @@ function AverageInstalledCapacitySection() {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        // Create chart data sets from the fetched data
+        const chartDataSets = {
+          label: data.key,
+          data: data.dataPoints,
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+        };
+
+        // set chart data state to render the chart
         setChartData({
+          title: data.title,
           labels: data.labels,
-          dataPoints: data.dataPoints,
+          dataSets: [chartDataSets],
         });
       })
       .catch((error) => {
@@ -30,12 +41,13 @@ function AverageInstalledCapacitySection() {
 
   return (
     <div className="max-w-[800px] w-full flex gap-4 flex-wrap justify-between mt-20">
-      <BarChart
-        title="Average Installed Capacity of Different Types of Renewable Energy"
-        labels={chartData.labels}
-        dataPoints={chartData.dataPoints}
-        keyLabel="Installed Capacity (MW)"
-      />
+      {chartData.labels.length > 0 && chartData.dataSets.length > 0 && (
+        <BarChart
+          title={chartData.title}
+          dataPoints={chartData.dataSets}
+          labels={chartData.labels}
+        />
+      )}
       <Summary
         title="Analysis Summary"
         text="The installed capacity for different types of renewable energy sources (Solar, Wind, 
