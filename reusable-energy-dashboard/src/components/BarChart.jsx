@@ -21,7 +21,6 @@ ChartJS.register(
 );
 
 function BarChart({ title, dataPoints, labels }) {
-  // Sample data for the bar graph
   const data = {
     labels: labels,
     datasets: dataPoints,
