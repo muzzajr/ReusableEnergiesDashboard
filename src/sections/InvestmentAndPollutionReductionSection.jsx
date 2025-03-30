@@ -1,6 +1,8 @@
 import { React, useEffect, useState } from "react";
+import apiConfig from "../utils/apiConfig";
 import Summary from "../components/Summary";
 import BarChart from "../components/BarChart";
+import NoData from "../components/NoData";
 
 function InvestmentAndEmissionReductionSection() {
   const [chartData, setChartData] = useState({
@@ -10,7 +12,9 @@ function InvestmentAndEmissionReductionSection() {
   });
 
   useEffect(() => {
-    fetch("/api/RenewableEnergiesData/investment-and-emission-reduction")
+    fetch(
+      `${apiConfig.apiUrl}/api/RenewableEnergiesData/investment-and-emission-reduction`
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -42,7 +46,7 @@ function InvestmentAndEmissionReductionSection() {
   return (
     <div className="max-w-[800px] w-full flex gap-4 flex-wrap justify-between mt-20">
       {/* Only attempt to render the charts if data is available */}
-      {chartData.labels.length > 0 && chartData.dataSets.length > 0 && (
+      {chartData.labels.length > 0 && chartData.dataSets.length > 0 ? (
         <>
           <BarChart
             title="Average Initial Investment"
@@ -54,31 +58,35 @@ function InvestmentAndEmissionReductionSection() {
             dataPoints={[chartData.dataSets[1]]}
             labels={chartData.labels}
           />
+
+          <div className="mb-30">
+            <Summary
+              title="Analysis Summary"
+              text={
+                <>
+                  All the renewable energy sources (Solar, Wind, Hydro,
+                  Geothermal, Biomass, Tidal, and Waves) require roughly the
+                  same initial investment of around 250 million USD on average.
+                  Similarly, the average GHG emission reduction is nearly the
+                  same across these energy sources, at approximately 50 tCO2e.
+                  <br />
+                  <br />
+                  Given that both the initial investment and GHG emission
+                  reduction are consistent across all the energy sources, the
+                  data doesn't suggest any significant variation or relationship
+                  between the amount invested and the emissions reduced. It
+                  implies that regardless of the renewable energy source, the
+                  return on investment in terms of GHG emission reduction
+                  remains relatively uniform.
+                </>
+              }
+            />
+          </div>
         </>
+      ) : (
+        // If no data is available, render the NoData component
+        <NoData />
       )}
-      <div className="mb-30">
-        <Summary
-          title="Analysis Summary"
-          text={
-            <>
-              All the renewable energy sources (Solar, Wind, Hydro, Geothermal,
-              Biomass, Tidal, and Waves) require roughly the same initial
-              investment of around 250 million USD on average. Similarly, the
-              average GHG emission reduction is nearly the same across these
-              energy sources, at approximately 50 tCO2e.
-              <br />
-              <br />
-              Given that both the initial investment and GHG emission reduction
-              are consistent across all the energy sources, the data doesn't
-              suggest any significant variation or relationship between the
-              amount invested and the emissions reduced. It implies that
-              regardless of the renewable energy source, the return on
-              investment in terms of GHG emission reduction remains relatively
-              uniform.
-            </>
-          }
-        />
-      </div>
     </div>
   );
 }

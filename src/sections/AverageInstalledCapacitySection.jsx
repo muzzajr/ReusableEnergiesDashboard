@@ -1,6 +1,8 @@
 import { React, useEffect, useState } from "react";
+import apiConfig from "../utils/apiConfig";
 import Summary from "../components/Summary";
 import BarChart from "../components/BarChart";
+import NoData from "../components/NoData";
 
 function AverageInstalledCapacitySection() {
   const [chartData, setChartData] = useState({
@@ -10,7 +12,9 @@ function AverageInstalledCapacitySection() {
   });
 
   useEffect(() => {
-    fetch("/api/RenewableEnergiesData/all-average-installed-capacity")
+    fetch(
+      `${apiConfig.apiUrl}/api/RenewableEnergiesData/all-average-installed-capacity`
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -41,20 +45,26 @@ function AverageInstalledCapacitySection() {
 
   return (
     <div className="max-w-[800px] w-full flex gap-4 flex-wrap justify-between mt-20">
-      {chartData.labels.length > 0 && chartData.dataSets.length > 0 && (
-        <BarChart
-          title={chartData.title}
-          dataPoints={chartData.dataSets}
-          labels={chartData.labels}
-        />
+      {/* Only attempt to render the charts if data is available */}
+      {chartData.labels.length > 0 && chartData.dataSets.length > 0 ? (
+        <>
+          <BarChart
+            title={chartData.title}
+            dataPoints={chartData.dataSets}
+            labels={chartData.labels}
+          />
+          <Summary
+            title="Analysis Summary"
+            text="The installed capacity for different types of renewable energy sources (Solar, Wind, 
+                Hydroelectric, Geothermal, Biomass, Tidal, Wave) appears to be relatively similar, with 
+                each type having an installed capacity around 500 MW. There is no single dominant energy 
+                source in terms of installed capacity."
+          />
+        </>
+      ) : (
+        // If no data is available, render the NoData component
+        <NoData />
       )}
-      <Summary
-        title="Analysis Summary"
-        text="The installed capacity for different types of renewable energy sources (Solar, Wind, 
-              Hydroelectric, Geothermal, Biomass, Tidal, Wave) appears to be relatively similar, with 
-              each type having an installed capacity around 500 MW. There is no single dominant energy 
-              source in terms of installed capacity."
-      />
     </div>
   );
 }
